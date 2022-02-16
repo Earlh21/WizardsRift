@@ -11,23 +11,23 @@
             <div class="mb-3">
                 <label class="form-label" for="mod-name">Name</label>
                 <input class="form-control" type="text" asp-for="Name" id="mod-name"/>
-                <span class ="text-danger">@Html.ValidationMessageFor(m => m.Name)</span>
+                <span asp-validation-for="Name" class ="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="mod-summary">Summary</label>
                 <input class="form-control" type="text" asp-for="Summary" id="mod-summary"/>
-                <span class="text-danger">@Html.ValidationMessageFor(m => m.Summary)</span>
+                <span asp-validation-for="Summary" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="mod-description">Description</label>
                 <textarea class="form-control" asp-for="Description" id="mod-description" rows="8"></textarea>
-                <span class ="text-danger">@Html.ValidationMessageFor(m => m.Description)</span>
+                <span asp-validation-for="Description" class ="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="mod-archive">Mod Files</label>
                 <input type="file" name="archive" id="mod-archive" class="form-control"
                        accept="application/zip,application/x-rar-compressed,application/x-7z-compressed"/>
-                <span class="text-danger">@Html.ValidationMessageFor(m => m.FileName)</span>
+                <span asp-validation-for="FileName" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="mod-image">Image</label>

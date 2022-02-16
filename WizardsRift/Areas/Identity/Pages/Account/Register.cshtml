@@ -11,12 +11,12 @@
         <div class="mb-3">
             <label class="form-label" asp-for="Input.Username">Username</label>
             <input class="form-control" asp-for="Input.Username" />
-            <span asp-validation-for="Input.Username" class="text-danger"> </span>
+            <span asp-validation-for="Input.Username" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <label class="form-label" asp-for="Input.Email">Email</label>
             <input class="form-control" asp-for="Input.Email" />
-            <span class="text-danger">@Html.ValidationMessageFor(m => m.Input.Email)</span>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <label class="form-label" asp-for="Input.Password">Password</label>

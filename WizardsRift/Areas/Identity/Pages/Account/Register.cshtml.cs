@@ -87,12 +87,12 @@ namespace WizardsRift.Areas.Identity.Pages.Account
 
             if (_userManager.Users.Any(u => u.NormalizedUserName == Input.Username.ToUpper()))
             {
-                ModelState.AddModelError("Username", "Username already exists");
+                ModelState.AddModelError("Input.Username", "Username already exists");
             }
 
             if (_userManager.Users.Any(u => u.NormalizedEmail == Input.Email.ToUpper()))
             {
-                ModelState.AddModelError("Email", "Email already exists");
+                ModelState.AddModelError("Input.Email", "Email already exists");
             }
 
             if (!ModelState.IsValid)
@@ -101,7 +101,6 @@ namespace WizardsRift.Areas.Identity.Pages.Account
             }
 
             var user = CreateUser();
-
             await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, Input.Password);
 

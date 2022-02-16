@@ -29,6 +29,7 @@ namespace WizardsRift.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
 
         public RegisterModel(
@@ -41,6 +42,7 @@ namespace WizardsRift.Areas.Identity.Pages.Account
             _userStore = userStore;
             _signInManager = signInManager;
             _logger = logger;
+            _emailStore = GetEmailStore();
         }
 
         [BindProperty] public InputModel Input { get; set; }
@@ -102,6 +104,7 @@ namespace WizardsRift.Areas.Identity.Pages.Account
 
             var user = CreateUser();
             await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded)
@@ -132,6 +135,15 @@ namespace WizardsRift.Areas.Identity.Pages.Account
                                                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                                                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
+        }
+        
+        private IUserEmailStore<ApplicationUser> GetEmailStore()
+        {
+            if (!_userManager.SupportsUserEmail)
+            {
+                throw new NotSupportedException("The default UI requires a user store with email support.");
+            }
+            return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }
 }

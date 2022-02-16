@@ -9,6 +9,7 @@ using SixLabors.ImageSharp.Formats.Pbm;
 using SixLabors.ImageSharp.Formats.Png;
 using WizardsRift.Data;
 using WizardsRift.Models;
+using SixLabors.ImageSharp;
 
 namespace WizardsRift.Controllers;
 
@@ -23,11 +24,11 @@ public class ModsController : Controller
         DbContext = db;
     }
 
-    private async Task SaveModFileAysnc(int id, IFormFile file, string filename)
+    private async Task SaveModArchiveAsync(int id, IFormFile file)
     {
         Directory.CreateDirectory($"E:\\mods\\{id}");
 
-        await using (Stream fs = new FileStream($"E:\\mods\\{id}\\{filename}", FileMode.Create))
+        await using (Stream fs = new FileStream($"E:\\mods\\{id}\\archive.bin", FileMode.Create))
         {
             await file.CopyToAsync(fs);
         }
@@ -37,10 +38,7 @@ public class ModsController : Controller
     {
         Directory.CreateDirectory($"E:\\mods\\{id}");
 
-        await using var ms = new MemoryStream();
-        await image_file.CopyToAsync(ms);
-        
-        var image = await SixLabors.ImageSharp.Image.LoadAsync(ms);
+        var image = await SixLabors.ImageSharp.Image.LoadAsync(image_file.OpenReadStream());
 
         await using var fs = new FileStream($"E:\\mods\\{id}\\image.png", FileMode.Create);
         await image.SaveAsync(fs, new PngEncoder());
@@ -75,7 +73,7 @@ public class ModsController : Controller
             return NotFound();
         }
         
-        byte[] bytes = System.IO.File.ReadAllBytes($"E:\\mods\\{id}\\{mod.FileName}");
+        byte[] bytes = System.IO.File.ReadAllBytes($"E:\\mods\\{id}\\archive.bin");
         return File(bytes, "application/force-download", mod.FileName);
     }
 
@@ -154,7 +152,7 @@ public class ModsController : Controller
         DbContext.Mods.Add(mod);
         await DbContext.SaveChangesAsync();
 
-        await SaveModFileAysnc(mod.Id, archive, archive.FileName);
+        await SaveModArchiveAsync(mod.Id, archive);
         
         if (image_file != null)
         {

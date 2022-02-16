@@ -16,3 +16,32 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.mod-image {
+  min-height: 6.4rem;
+  max-height: 6.4rem;
+  min-width: 6.4rem;
+  max-width: 6.4rem;
+}
+
+.mod {
+  padding: 8rem;
+}
+
+.description {
+  padding: 2rem;
+  background-color: #ffffff;
+}
+
+.mod-summary {
+  text-overflow: ellipsis;
+}
+
+.mod-link {
+  color: #397bb7;
+  text-decoration: none;
+}
+
+body {
+  background-color: #efefef;
+}

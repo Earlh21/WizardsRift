@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WizardsRift.Data.Models;
+namespace WizardsRift.Models;
 
 public class ModVersion
 {

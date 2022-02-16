@@ -1,7 +1,26 @@
-﻿@{
-    ViewData["Title"] = "Index";
-}
+﻿@model Mod
 
-<h2>Mods Index Details</h2>
+<div class="container-lg mod">
+    <div class="row mb-3">
+        <div class="col-md-1">
+            <img class="mod-image" src="https://localhost:7103/mods/@Model.Id/image" alt="mod thumbnail"/>
+        </div>
+        <div class="col">
+            <div class="container">
+                <div class="d-flex align-items-center mb-2">
+                    <h2 class="flex-fill">@Model.Name</h2>
+                    <a class="btn btn-primary" href="https://localhost:7103/mods/@Model.Id/archive">Download</a>
+                </div>
+                <div class="row text-muted">
+                    <p>Created @Model.DateCreated.ToString()</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p>Hello from our View Template!</p>
+    <div class="row">
+        <section class="description bg-white rounded mb-2">
+            <p>@Model.Description</p>
+        </section>
+    </div>
+</div>

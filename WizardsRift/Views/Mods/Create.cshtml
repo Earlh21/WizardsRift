@@ -11,29 +11,29 @@
             <div class="mb-3">
                 <label class="form-label" for="mod-name">Name</label>
                 <input class="form-control" type="text" asp-for="Name" id="mod-name"/>
-                <span class ="alert-danger">@Html.ValidationMessageFor(m => m.Name)</span>
+                <span class ="text-danger">@Html.ValidationMessageFor(m => m.Name)</span>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="mod-summary">Summary</label>
                 <input class="form-control" type="text" asp-for="Summary" id="mod-summary"/>
-                <span class="alter-danger">@Html.ValidationMessageFor(m => m.Summary)</span>
+                <span class="text-danger">@Html.ValidationMessageFor(m => m.Summary)</span>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="mod-description">Description</label>
                 <textarea class="form-control" asp-for="Description" id="mod-description" rows="8"></textarea>
-                <span class ="alert-danger">@Html.ValidationMessageFor(m => m.Description)</span>
+                <span class ="text-danger">@Html.ValidationMessageFor(m => m.Description)</span>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="mod-archive">Mod Files</label>
                 <input type="file" name="archive" id="mod-archive" class="form-control"
                        accept="application/zip,application/x-rar-compressed,application/x-7z-compressed"/>
-                <span class="alert-danger">@Html.ValidationMessageFor(m => m.FileName)</span>
+                <span class="text-danger">@Html.ValidationMessageFor(m => m.FileName)</span>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="mod-image">Image</label>
                 <input type="file" name="image" id="mod-image" class="form-control"
                        accept="image/png,image/jpeg"/>
-                <span class="alert-danger">@Html.ValidationMessage("Image")</span>
+                <span class="text-danger">@Html.ValidationMessage("Image")</span>
             </div>
             <div class="d-grid">
                 <input type="submit" value="Create" class="btn btn-outline-primary"/>

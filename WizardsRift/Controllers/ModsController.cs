@@ -109,33 +109,39 @@ public class ModsController : Controller
     
     [HttpPost]
     [Route("mods/new")]
-    public async Task<IActionResult> Create([Bind("Name", "Description", "Summary")] Mod mod, IFormFile archive, IFormFile? image_file)
+    public async Task<IActionResult> Create([Bind("Name", "Description", "Summary")] Mod mod, IFormFile? archive, IFormFile? image_file)
     {
         var username = User.Identity?.Name;
         if (username == null) { return RedirectToPage("/"); }
 
         mod.Author = await UserManager.FindByNameAsync(username);
-        ModelState.Remove("Author");
         mod.DateCreated = DateTime.Now;
-        ModelState.Remove("DateCreated");
-        mod.FileName = archive.FileName;
+        
+        //These fields are automatically set
         ModelState.Remove("FileName");
-
-        //Test for routing in the filename
-        var test_path = Path.Combine("E:\\" + archive.FileName);
-        if (Path.GetDirectoryName(test_path) != "E:\\")
+        ModelState.Remove("Author");
+        ModelState.Remove("DateCreated");
+        
+        if (archive == null)
         {
-            ModelState.AddModelError("FileName", "File name is invalid.");
+            ModelState.AddModelError("FileName", "Mod files must be included.");
+        }
+        else
+        {
+            mod.FileName = archive.FileName;
+            ModelState.Remove("FileName");
+            
+            //Test for routing in the filename
+            var test_path = Path.Combine("E:\\" + archive.FileName);
+            if (Path.GetDirectoryName(test_path) != "E:\\")
+            {
+                ModelState.AddModelError("FileName", "File name is invalid.");
+            }
         }
         
         if(DbContext.Mods.Any(m => m.Name == mod.Name))
         {
             ModelState.AddModelError("Name", $"A mod with the name '{mod.Name}' already exists.");
-        }
-        
-        if (archive == null)
-        {
-            ModelState.AddModelError("FileName", "Mod files must be included.");
         }
 
         if (!ModelState.IsValid)

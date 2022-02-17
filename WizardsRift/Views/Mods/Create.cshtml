@@ -4,46 +4,39 @@
 
 @model Mod
 
-@if (User.Identity?.IsAuthenticated ?? false)
-{
-    <div class="container">
-        <form method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label" for="mod-name">Name</label>
-                <input class="form-control" type="text" asp-for="Name" id="mod-name"/>
-                <span asp-validation-for="Name" class ="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="mod-summary">Summary</label>
-                <input class="form-control" type="text" asp-for="Summary" id="mod-summary"/>
-                <span asp-validation-for="Summary" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="mod-description">Description</label>
-                <textarea class="form-control" asp-for="Description" id="mod-description" rows="8"></textarea>
-                <span asp-validation-for="Description" class ="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="mod-archive">Mod Files</label>
-                <input type="file" name="archive" id="mod-archive" class="form-control"
-                       accept="application/zip,application/x-rar-compressed,application/x-7z-compressed"/>
-                <span asp-validation-for="FileName" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="mod-image">Image</label>
-                <input type="file" name="image_file" id="mod-image" class="form-control"
-                       accept="image/png,image/jpeg"/>
-                <span class="text-danger">@Html.ValidationMessage("Image")</span>
-            </div>
-            <div class="d-grid">
-                <input type="submit" value="Create" class="btn btn-outline-primary"/>
-            </div>
-        </form>
-    </div>
-}
-else
-{
-    <div class="text-center">
-        <p>You must be signed in to create a new mod.</p>
-    </div>
-}
+<div class="container">
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label" for="mod-name">Name</label>
+            <input class="form-control" type="text" asp-for="Name" id="mod-name"/>
+            <span asp-validation-for="Name" class ="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="mod-summary">Summary</label>
+            <input class="form-control" type="text" asp-for="Summary" id="mod-summary"/>
+            <span asp-validation-for="Summary" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="mod-description">Description</label>
+            <textarea class="form-control" asp-for="Description" id="mod-description" rows="8"></textarea>
+            <span asp-validation-for="Description" class ="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="mod-archive">Mod Files</label>
+            <input type="file" name="archive" id="mod-archive" class="form-control"
+                   accept="application/zip,application/x-rar-compressed,application/x-7z-compressed"/>
+            <p class="file-info">zip, rar, and 7zip files are accepted.</p>
+            <span asp-validation-for="FileName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="mod-image">Image</label>
+            <input type="file" name="image_file" id="mod-image" class="form-control"
+                   accept="image/png,image/jpeg"/>
+            <p class="file-info">JPEG and PNG files are accepted. Aspect ratio of 1:1 is recommended.</p>
+            <span class="text-danger">@Html.ValidationMessage("Image")</span>
+        </div>
+        <div class="d-grid">
+            <input type="submit" value="Create" class="btn btn-outline-primary"/>
+        </div>
+    </form>
+</div>

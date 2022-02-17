@@ -15,6 +15,11 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #e5e5e5;
+}
+
+header {
+
 }
 
 .mod-image {
@@ -37,11 +42,46 @@ body {
   text-overflow: ellipsis;
 }
 
+.search {
+  width: 40%;
+}
+
+.title {
+  margin-bottom: 4rem;
+}
+
+.title-text {
+  font-size: 5rem;
+}
+
 .mod-link {
-  color: #397bb7;
   text-decoration: none;
 }
 
-body {
-  background-color: #efefef;
+.file-info {
+  --bs-text-opacity: 1;
+  color: #6c757d!important;
+  font-style: italic;
+}
+
+.mod-author {
+
+}
+
+.download-count-image {
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+.sort-table-header {
+  text-align: center;
+  width: 33%;
+}
+
+.wizard-image {
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
 }

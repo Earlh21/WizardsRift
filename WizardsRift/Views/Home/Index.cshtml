@@ -2,7 +2,23 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row">
+        <image class="wizard-image" src="images/wizard.png"/>
+    </div>
+    <div class="row text-center title">
+        <h1 class="title-text">Wizard's Rift</h1>
+    </div>
+    <div class="row">
+        <div class="container text-center">
+            <form method="get" action="/mods">
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Search Mods" name="search"/>
+                </div>
+                <div>
+                    <input type="submit" value="Search" class="btn btn-outline-primary search"/>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

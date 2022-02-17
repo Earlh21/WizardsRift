@@ -24,10 +24,10 @@ public class UsersController : Controller
 
         if (user == null)
         {
-            return View(null);
+            return NotFound();
         }
         
         var mods = DbContext.Mods.Where(m => m.Author == user).OrderBy(m => m.DateCreated);
-        return View(mods.ToPagedList(page ?? 1, 4));
+        return View(await mods.ToPagedListAsync(page ?? 1, 4));
     }
 }

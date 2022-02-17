@@ -1,7 +1,64 @@
-﻿@{
-    ViewData["Title"] = "Index";
+﻿@using WizardsRift.Data
+@inject UserManager<ApplicationUser> UserManager
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+@using Microsoft.AspNetCore.Identity
+
+@model X.PagedList.IPagedList<Mod>
+
+<div class="container mb-5">
+    <form method="get">
+        <div class="mb-3">
+            <label class="form-label" for="mod-search">Search</label>
+            <input class="form-control" value="@ViewBag.SearchParam" type="text" id="mod-search" name="search"/>
+        </div>
+        <div class="text-center">
+            <input type="submit" value="Search" class="btn btn-outline-primary search"/>
+        </div>
+    </form>
+</div>
+
+<table class="table">
+    <tr>
+        <th class="sort-table-header">
+            @Html.ActionLink("Name", "Index", new { search=ViewBag.SearchParam, sort_order = ViewBag.NameSortParm }, new {style = "text-decoration: none"})
+        </th>
+        <th class="sort-table-header">
+            @Html.ActionLink("Date Created", "Index", new { search=ViewBag.SearchParam, sort_order = ViewBag.DateSortParm }, new {style = "text-decoration: none"})
+        </th>
+        <th class="sort-table-header">
+            @Html.ActionLink("Download Count", "Index", new { search=ViewBag.SearchParam, sort_order = ViewBag.DownloadsSortParm }, new {style = "text-decoration: none"})
+        </th>
+        <th></th>
+    </tr>
+</table>
+
+<div class="container">
+    @foreach (var mod in Model)
+    {
+        <div class="row mb-5">
+            <partial name="ModBanner" model="mod"/>
+        </div>
+    }
+</div>
+
+    
+<p>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+
+@if (Model.PageCount > 1)
+{
+    @Html.PagedListPager(
+        Model,
+        page => Url.Action((string?)ViewContext.RouteData.Values["username"],
+            new
+            {
+                page,
+                search = ViewBag.SearchParam,
+                sort_order = ViewBag.SortParam
+            }
+            ),
+        new PagedListRenderOptions()
+        {
+            LiElementClasses = new List<string> { "pager-button", "mx-1" }
+        })
 }
-
-<h2>Mods Index</h2>
-
-<p>Hello from our View Template!</p>

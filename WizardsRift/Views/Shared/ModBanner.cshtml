@@ -1,0 +1,26 @@
+﻿@model Mod
+
+<div class="container mod-banner">
+    <div class="row p-2">
+        <div class="col-md-1">
+            <a href="https://localhost:7103/mods/@Model.Id">
+                <img class="mod-image" src="https://localhost:7103/mods/@Model.Id/image" alt="mod thumbnail"/>
+            </a>
+        </div>
+        <div class="col">
+            <div class="">
+                <a href="https://localhost:7103/mods/@Model.Id" class="mod-link">
+                    <h3 class="mb-0">@Model.Name</h3>
+                </a>
+            </div>
+            <div class="d-flex align-items-center mb-0">
+                <p class="mod-author text-muted mb-0">@Model.Author.UserName</p>
+                <image class="download-count-image" src="https://localhost:7103/resources/images/download-icon.png" alt="download count"/>
+                <p class="text-muted mb-0">@Model.DownloadCount</p>
+            </div>
+            <div class="row">
+                <p class="mod-summary mb-0">@Model.Summary</p>
+            </div>
+        </div>
+    </div>
+</div>

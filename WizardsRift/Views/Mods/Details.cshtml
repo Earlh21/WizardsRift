@@ -1,5 +1,6 @@
 ﻿@model Mod
 
+
 <div class="container-lg mod">
     <div class="row mb-3">
         <div class="col-md-1">
@@ -10,6 +11,11 @@
                 <div class="d-flex align-items-center mb-2">
                     <h2 class="flex-fill">@Model.Name</h2>
                     <a class="btn btn-primary" href="https://localhost:7103/mods/@Model.Id/archive">Download</a>
+                </div>
+                <div class="d-flex align-items-center mb-0">
+                    <p class="mod-author text-muted mb-0">@Model.Author.UserName</p>
+                    <image class="download-count-image" src="https://localhost:7103/resources/images/download-icon.png" alt="download count"/>
+                    <p class="text-muted mb-0">@Model.DownloadCount</p>
                 </div>
                 <div class="row text-muted">
                     <p>Created @Model.DateCreated.ToString()</p>

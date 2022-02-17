@@ -7,48 +7,28 @@
 
 @model X.PagedList.IPagedList<Mod>
 
-@if (Model != null)
-{
-    <div class="container">
-        @foreach (var mod in Model)
-        {
-            <div class="row mb-2">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <a href="https://localhost:7103/mods/@mod.Id">
-                                <img class="mod-image" src="https://localhost:7103/mods/@mod.Id/image" alt="mod thumbnail"/>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <div class="d-flex align-items-center mb-1">
-                                <a href="https://localhost:7103/mods/@mod.Id" class="mod-link">
-                                    <h3 class="flex-fill">@mod.Name</h3>
-                                </a>
-                            </div>
-                            <div class="row text-muted">
-                                <p class="mod-summary">@mod.Summary</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
 
-    
-    <p>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+<div class="container">
+    @foreach (var mod in Model)
+    {
+        <div class="row mb-2">
+            <partial name="ModBanner" model="mod"/>
+        </div>
+    }
+</div>
+
+
+<p>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+
+@if (Model.PageCount > 1)
+{
     @Html.PagedListPager(
         Model,
         page => Url.Action((string?)ViewContext.RouteData.Values["username"],
-            new {page}
+            new { page }
             ),
         new PagedListRenderOptions()
         {
-            LiElementClasses = new List<string> {"pager-button", "mx-1"}
+            LiElementClasses = new List<string> { "pager-button", "mx-1" }
         })
-}
-else
-{
-    <p>User not found.</p>
 }

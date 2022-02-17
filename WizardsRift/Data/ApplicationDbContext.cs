@@ -23,6 +23,10 @@ public class ApplicationDbContext : IdentityDbContext
             .HasIndex(m => m.Name)
             .IsUnique();
 
+        builder.Entity<Mod>()
+            .HasOne(m => m.Author)
+            .WithMany(u => u.Mods);
+
         builder.Entity<ApplicationUser>()
             .HasMany(u => u.Mods)
             .WithOne(m => m.Author);

@@ -11,6 +11,9 @@ using WizardsRift.Data;
 using WizardsRift.Models;
 using SixLabors.ImageSharp;
 using X.PagedList;
+using Amazon.S3;
+using Amazon.S3.Transfer;
+using Amazon.S3.Model;
 
 namespace WizardsRift.Controllers;
 
@@ -25,24 +28,67 @@ public class ModsController : Controller
         DbContext = db;
     }
 
-    private async Task SaveModArchiveAsync(int id, IFormFile file)
+    private AmazonS3Client CreateS3Client()
     {
-        Directory.CreateDirectory($"E:\\mods\\{id}");
+        var key = Environment.GetEnvironmentVariable("WRIFT_S3_KEY", EnvironmentVariableTarget.User);
+        var secret = Environment.GetEnvironmentVariable("WRIFT_S3_SECRET", EnvironmentVariableTarget.User);
+        var region = Environment.GetEnvironmentVariable("WRIFT_S3_REGION", EnvironmentVariableTarget.User);
+        
+        return new AmazonS3Client(key, secret, Amazon.RegionEndpoint.GetBySystemName(region));
+    }
 
-        await using (Stream fs = new FileStream($"E:\\mods\\{id}\\archive.bin", FileMode.Create))
+    private async Task PutS3FileAsync(string key, IFormFile file)
+    {
+        var bucket = Environment.GetEnvironmentVariable("WRIFT_S3_BUCKET", EnvironmentVariableTarget.User);
+        using var client = CreateS3Client();
+
+        var request = new TransferUtilityUploadRequest
         {
-            await file.CopyToAsync(fs);
+            InputStream = file.OpenReadStream(),
+            Key =  key,
+            BucketName = bucket
+        };
+
+        using var transfer = new TransferUtility(client);
+        await transfer.UploadAsync(request);
+    }
+
+    private async Task<byte[]?> GetS3FileAsync(string key)
+    {
+        var bucket = Environment.GetEnvironmentVariable("WRIFT_S3_BUCKET", EnvironmentVariableTarget.User);
+        using var client = CreateS3Client();
+
+        try
+        {
+            using var response = await client.GetObjectAsync(new GetObjectRequest
+            {
+                BucketName = bucket,
+                Key = key
+            });
+
+            using var m_stream = new MemoryStream();
+
+            using var response_stream = response.ResponseStream;
+            await response.ResponseStream.CopyToAsync(m_stream);
+            return m_stream.ToArray();
+        }
+        catch(AmazonS3Exception)
+        {
+            return null;
         }
     }
-    
-    private async Task SaveModImageAsync(int id, IFormFile image_file, string filename)
+
+    private string GetS3PreSignedUrl(string key)
     {
-        Directory.CreateDirectory($"E:\\mods\\{id}");
+        var bucket = Environment.GetEnvironmentVariable("WRIFT_S3_BUCKET", EnvironmentVariableTarget.User);
+        using var client = CreateS3Client();
 
-        var image = await SixLabors.ImageSharp.Image.LoadAsync(image_file.OpenReadStream());
-
-        await using var fs = new FileStream($"E:\\mods\\{id}\\image.png", FileMode.Create);
-        await image.SaveAsync(fs, new PngEncoder());
+        return client.GetPreSignedURL(new GetPreSignedUrlRequest
+        {
+            BucketName = bucket,
+            Key = key,
+            Expires = DateTime.UtcNow.AddHours(1)
+        });
     }
     
     private bool IsFilenameValid(string filename)
@@ -113,7 +159,7 @@ public class ModsController : Controller
     }
     
     [Route("mods/{id}/archive")]
-    public IActionResult Archive(int id)
+    public async Task<IActionResult> Archive(int id)
     {
         var mod = DbContext.Mods.FirstOrDefault(m => m.Id == id);
         
@@ -126,8 +172,7 @@ public class ModsController : Controller
 
         DbContext.SaveChanges();
 
-        byte[] bytes = System.IO.File.ReadAllBytes($"E:\\mods\\{id}\\archive.bin");
-        return File(bytes, "application/force-download", mod.FileName);
+        return File(await GetS3FileAsync($"mod_{id}/archive"), "application/force-download", mod.FileName);
     }
 
     [Route("mods/{id}/image")]
@@ -140,16 +185,9 @@ public class ModsController : Controller
             return NotFound();
         }
 
-        if (System.IO.File.Exists($"E:\\mods\\{id}\\image.png"))
-        {
-            byte[] bytes = await System.IO.File.ReadAllBytesAsync($"E:\\mods\\{id}\\image.png");
-            return File(bytes, "image/png");
-        }
-        else
-        {
-            byte[] bytes = await System.IO.File.ReadAllBytesAsync($"E:\\resources\\images\\default-mod-image.png");
-            return File(bytes, "image/png");
-        }
+        string url = GetS3PreSignedUrl($"mod_{id}/image");
+
+        return Redirect(url);
     }
 
     [Route("mods/new")]
@@ -208,11 +246,11 @@ public class ModsController : Controller
         DbContext.Mods.Add(mod);
         await DbContext.SaveChangesAsync();
 
-        await SaveModArchiveAsync(mod.Id, archive);
+        await PutS3FileAsync($"mod_{mod.Id}/archive", archive);
         
         if (image_file != null)
         {
-            await SaveModImageAsync(mod.Id, image_file, "image.png");
+            await PutS3FileAsync($"mod_{mod.Id}/image", image_file);
         }
 
         await tx.CommitAsync();
@@ -288,12 +326,12 @@ public class ModsController : Controller
         
         if (archive != null)
         {
-            await SaveModArchiveAsync(mod.Id, archive);
+            await PutS3FileAsync($"mod_{mod.Id}/archive", archive);
         }
         
         if (image_file != null)
         {
-            await SaveModImageAsync(mod.Id, image_file, "image.png");
+            await PutS3FileAsync($"mod_{mod.Id}/image", image_file);
         }
         
         await tx.CommitAsync();
